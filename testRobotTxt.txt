@@ -1,0 +1,19 @@
+#
+# Doesn't follow robots.txt anyway, but...
+#
+User-agent: k2spider
+Disallow: /
+
+#
+# Hits many times per second, not acceptable
+# http://www.nameprotect.com/botinfo.html
+User-agent: NPBot
+Disallow: /
+
+User-agent: *
+Allow: /w/api.php?action=mobileview&
+Allow: /w/load.php?
+Allow: /api/rest_v1/?doc
+Disallow: /w/
+Disallow: /api/
+Disallow: /trap/
