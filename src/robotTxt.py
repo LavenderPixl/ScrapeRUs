@@ -1,9 +1,6 @@
 import requests
-from bs4 import BeautifulSoup
 
 baseUrl = 'https://en.wikipedia.org'
-
-
 my_agents = ['*', 'LavSpidey']
 
 
@@ -15,11 +12,12 @@ def setup_robot_txt():
         exit(1)
 
     for agent in my_agents:
-        allowed, disallowed = parsed_text[agent]
-        print(f'Allowed: {allowed}, Disallowed: {disallowed}')
-
-
-    # sort_allowed(parsed_text)
+        if agent in parsed_text:
+            allowed, disallowed = parsed_text[agent]
+            print(f'\nAgent in: {agent}')
+            print(f'Allowed: {allowed}, Disallowed: {disallowed}')
+        else:
+            print(f'\nAgent not in robots txt. : {agent}')
 
 
 def get_robot_txt(base_url):
@@ -49,21 +47,5 @@ def read_robot_txt(robot_txt):
             allowed.add(value)
         elif name == "Disallow":
             disallowed.add(value)
-
         agents[current_agent] = (allowed, disallowed)
     return agents
-
-# def sort_allowed(parsed_text):
-#     robots_txt = set_agent(parsed_text, baseUrl)
-#
-#     allowed, disallowed = robots_txt[parsed_text]
-#     return allowed, disallowed
-
-# def set_agent(current_agent, base_url):
-#     robot_txt = get_robot_txt(base_url)
-#     agents = read_robot_txt(current_agent, robot_txt)
-#     return agents
-
-def crawl(agent):
-    allowed, disallowed = sort_allowed(agent)
-    print(f"Allowed: {allowed}, Disallowed: {disallowed}")
