@@ -11,23 +11,31 @@ def test_get_robots_txt():
 
 
 class TestRobotTxt(unittest.TestCase):
-
+    # Retrieving LOCAL robot.txt file.
     def test_read_robot_txt(self):
-        result = test_get_robots_txt()
-        assert result == {'k2spider': (set(), {'/'}), 'NPBot': (set(), {'/'}), '*': (
+        actual = test_get_robots_txt()
+        expected = {'k2spider': (set(), {'/'}), 'NPBot': (set(), {'/'}), '*': (
             {'/api/rest_v1/?doc', '/w/load.php?', '/w/api.php?action=mobileview&'}, {'/api/', '/w/', '/trap/'})}
 
+        assert actual == expected
+
+    # Testing with NO agent specified.
     def test_sort_robot_txt_none(self):
         robots_txt = test_get_robots_txt()
-        none = sort_allowed([], robots_txt)
-        assert none == (set(), set())
+        actual = sort_allowed([], robots_txt)
+        expected = (set(), set())
 
+        assert actual == expected
+
+    # Testing with an agent in the Robots.txt
     def test_sort_robot_txt_single(self):
         robots_txt = test_get_robots_txt()
-        single = sort_allowed(['k2spider'], robots_txt)
-        print(single)
-        assert single == (set(), set('/'))
+        actual = sort_allowed(['k2spider'], robots_txt)
+        expected = (set(), set('/'))
 
+        assert actual == expected
+
+    # Testing with Multiple Agents, including one that is NOT in Robots.txt
     def test_sort_robot_txt_multiple(self):
         robots_txt = test_get_robots_txt()
         actual = sort_allowed(['*', 'k2spider', 'tester'], robots_txt)
@@ -36,5 +44,4 @@ class TestRobotTxt(unittest.TestCase):
             {'/w/', '/api/', '/', '/trap/'}
         )
 
-        print(actual, expected)
         assert actual == expected
