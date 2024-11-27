@@ -1,31 +1,51 @@
+from http import HTTPStatus
+from requests.exceptions import HTTPError
+import time
 import requests
 
-baseUrl = 'https://en.wikipedia.org'
-my_agents = ['*', 'LavSpidey']
+headers = {
+    'User-Agent': "LavSpidey"
+}
 
 
-def setup_robot_txt():
-    txt = get_robot_txt(baseUrl)
-    parsed_text = read_robot_txt(txt)
-    if parsed_text == "err":
-        print("Error - Could not get robots txt.")
-        exit(1)
-
-    for agent in my_agents:
-        if agent in parsed_text:
-            allowed, disallowed = parsed_text[agent]
-            print(f'\nAgent in: {agent}')
-            print(f'Allowed: {allowed}, Disallowed: {disallowed}')
-        else:
-            print(f'\nAgent not in robots txt. : {agent}')
+def setup_robot_txt(my_agents, base_urls):
+    urls = {}
+    for url in base_urls:
+        txt = get_robot_txt(url)
+        parsed_text = read_robot_txt(txt)
+        if parsed_text == "err":
+            print("Could not find a robots txt. Assuming full access to scrape.")
+            return
+        urls = sort_allowed(my_agents, parsed_text)
+    return urls
 
 
 def get_robot_txt(base_url):
-    result = requests.get(base_url + "/robots.txt")
-    if result.status_code != 200:
-        print(f"Error - Status code: {result.status_code}")
-        exit(1)
+    result = check_request(base_url)
     return result.text
+
+
+def check_request(base_url):
+    retries = 3
+    retry_codes = [
+        HTTPStatus.TOO_MANY_REQUESTS,
+        HTTPStatus.INTERNAL_SERVER_ERROR,
+        HTTPStatus.BAD_GATEWAY,
+        HTTPStatus.SERVICE_UNAVAILABLE,
+        HTTPStatus.GATEWAY_TIMEOUT,
+    ]
+
+    for r in range(retries):
+        try:
+            result = requests.get(base_url + "/robots.txt", headers=headers)
+            result.raise_for_status()
+            return result
+        except HTTPError as http_err:
+            code = http_err.response.status_code
+            if code in retry_codes:
+                time.sleep(r)
+                continue
+            return False
 
 
 def read_robot_txt(robot_txt):
@@ -49,3 +69,17 @@ def read_robot_txt(robot_txt):
             disallowed.add(value)
         agents[current_agent] = (allowed, disallowed)
     return agents
+
+
+def sort_allowed(agents, parsed_text):
+    allowed_set = set()
+    disallowed_set = set()
+    for agent in agents:
+        if agent not in parsed_text.keys():
+            print(f'\nAgent not found: {agent}')
+        else:
+            allowed, disallowed = parsed_text[agent]
+            print(f'\nAgent found: {agent}')
+            allowed_set.update(allowed)
+            disallowed_set.update(disallowed)
+    return allowed_set, disallowed_set
