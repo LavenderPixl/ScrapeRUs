@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, ConnectionError
 import time
 import requests
 
@@ -8,22 +8,24 @@ agent = 'LavSpidey'
 def setup_robot_txt(base_urls):
     urls = {}
     for url in base_urls:
+        if not url.startswith('https://') or url.startswith('http://'):
+            url = 'https://' + url
+        print(f"Base url: {url}")
         txt = get_robot_txt(url)
         if not txt:
             print("Could not find a robots txt. Assuming full access to scrape.")
-            return
+            return set(), set()
         parsed_text = read_robot_txt(txt)
         if parsed_text == "err":
             print("Could not find a robots txt. Assuming full access to scrape.")
-            return
+            return set(), set()
         urls = sort_allowed(agent, parsed_text)
-
     return urls
 
 
 def get_robot_txt(base_url):
     result = check_request(base_url)
-    print(result)
+    print(f"Response/Status Code: {result.status_code}")
     if not result:
         print("No robots txt.")
         return None
@@ -45,15 +47,17 @@ def check_request(base_url):
             result = requests.get(base_url + "/robots.txt", headers= {
                 'User-Agent': "LavSpidey"
             })
-            result.raise_for_status()
             return result
+        except ConnectionError as conn_err:
+            print(f"Connection error: {conn_err}")
+            exit("Could not connect to website. Is the URL correct?")
         except HTTPError as http_err:
             code = http_err.response.status_code
+            print(code)
             if code in retry_codes:
                 time.sleep(r)
                 continue
-            return False
-
+            exit("Could not connect to website. Have you been limited?")
 
 def read_robot_txt(robot_txt):
     current_agent = ''
@@ -82,7 +86,7 @@ def sort_allowed(specific_agent, parsed_text):
     allowed_set = set()
     disallowed_set = set()
     if specific_agent not in parsed_text.keys():
-        print(f'\nAgent not found: {specific_agent}')
+        print(f'\nAgent not found: {specific_agent} | Assuming "*" agent.')
     else:
         allowed, disallowed = parsed_text[specific_agent]
         print(f'\nAgent found: {specific_agent}')
