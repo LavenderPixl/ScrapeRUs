@@ -3,10 +3,6 @@ from requests.exceptions import HTTPError
 import time
 import requests
 
-headers = {
-    'User-Agent': "LavSpidey"
-}
-
 
 def setup_robot_txt(my_agents, base_urls):
     urls = {}
@@ -37,7 +33,9 @@ def check_request(base_url):
 
     for r in range(retries):
         try:
-            result = requests.get(base_url + "/robots.txt", headers=headers)
+            result = requests.get(base_url + "/robots.txt", headers= {
+                'User-Agent': "LavSpidey"
+            })
             result.raise_for_status()
             return result
         except HTTPError as http_err:
