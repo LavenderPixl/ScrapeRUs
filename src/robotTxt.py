@@ -3,21 +3,30 @@ from requests.exceptions import HTTPError
 import time
 import requests
 
+agent = 'LavSpidey'
 
-def setup_robot_txt(my_agents, base_urls):
+def setup_robot_txt(base_urls):
     urls = {}
     for url in base_urls:
         txt = get_robot_txt(url)
+        if not txt:
+            print("Could not find a robots txt. Assuming full access to scrape.")
+            return
         parsed_text = read_robot_txt(txt)
         if parsed_text == "err":
             print("Could not find a robots txt. Assuming full access to scrape.")
             return
-        urls = sort_allowed(my_agents, parsed_text)
+        urls = sort_allowed(agent, parsed_text)
+
     return urls
 
 
 def get_robot_txt(base_url):
     result = check_request(base_url)
+    print(result)
+    if not result:
+        print("No robots txt.")
+        return None
     return result.text
 
 
@@ -69,15 +78,14 @@ def read_robot_txt(robot_txt):
     return agents
 
 
-def sort_allowed(agents, parsed_text):
+def sort_allowed(specific_agent, parsed_text):
     allowed_set = set()
     disallowed_set = set()
-    for agent in agents:
-        if agent not in parsed_text.keys():
-            print(f'\nAgent not found: {agent}')
-        else:
-            allowed, disallowed = parsed_text[agent]
-            print(f'\nAgent found: {agent}')
-            allowed_set.update(allowed)
-            disallowed_set.update(disallowed)
+    if specific_agent not in parsed_text.keys():
+        print(f'\nAgent not found: {specific_agent}')
+    else:
+        allowed, disallowed = parsed_text[specific_agent]
+        print(f'\nAgent found: {specific_agent}')
+        allowed_set.update(allowed)
+        disallowed_set.update(disallowed)
     return allowed_set, disallowed_set

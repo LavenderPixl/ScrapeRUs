@@ -2,10 +2,8 @@ import robotTxt
 import scrape
 
 if __name__ == '__main__':
-    urls = ['https://en.wikipedia.org']
-    my_agents = ['LavSpidey']
+    urls = ['https://lavenderpixl.github.io']
 
-    robot_txt = robotTxt.setup_robot_txt(my_agents, urls)
-    # test = robotTxt.check_request('https://en.wikipedia.org')
-    # print(test)
-    print(robot_txt)
+    robot_txt = robotTxt.setup_robot_txt(urls)
+    print(f"Allowed: {robot_txt[0]}")
+    print(f"Disallowed: {robot_txt[1]}")
