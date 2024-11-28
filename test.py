@@ -19,6 +19,14 @@ class TestRobotTxt(unittest.TestCase):
 
         assert actual == expected
 
+    # No robot_txt found!
+    def test_read_robot_txt_nonexistent(self):
+        actual = read_robot_txt("https://lavenderpixl.github.io/#/robots.txt")
+        expected = {'': (set(), set())}
+
+        assert actual == expected
+
+
     # Testing with NO agent specified.
     def test_sort_robot_txt_none(self):
         robots_txt = test_get_robots_txt()
