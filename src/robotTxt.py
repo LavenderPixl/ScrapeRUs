@@ -87,9 +87,10 @@ def sort_allowed(specific_agent, parsed_text):
     disallowed_set = set()
     if specific_agent not in parsed_text.keys():
         print(f'\nAgent not found: {specific_agent} | Assuming "*" agent.')
+        allowed, disallowed = parsed_text['*']
     else:
-        allowed, disallowed = parsed_text[specific_agent]
         print(f'\nAgent found: {specific_agent}')
-        allowed_set.update(allowed)
-        disallowed_set.update(disallowed)
+        allowed, disallowed = parsed_text[specific_agent]
+    allowed_set.update(allowed)
+    disallowed_set.update(disallowed)
     return allowed_set, disallowed_set
