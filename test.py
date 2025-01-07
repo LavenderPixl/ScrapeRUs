@@ -26,12 +26,12 @@ class TestRobotTxt(unittest.TestCase):
 
         assert actual == expected
 
-
     # Testing with NO agent specified.
     def test_sort_robot_txt_none(self):
         robots_txt = test_get_robots_txt()
         actual = sort_allowed(None, robots_txt)
-        expected = (set(), set())
+        expected = (
+            {'/w/api.php?action=mobileview&', '/w/load.php?', '/api/rest_v1/?doc'}, {'/w/', '/api/', '/trap/'})
 
         assert actual == expected
 
@@ -40,14 +40,15 @@ class TestRobotTxt(unittest.TestCase):
         robots_txt = test_get_robots_txt()
         actual = sort_allowed('*', robots_txt)
         expected = ({'/api/rest_v1/?doc', '/w/api.php?action=mobileview&', '/w/load.php?'},
-            {'/w/', '/api/', '/trap/'})
+                    {'/w/', '/api/', '/trap/'})
 
         assert actual == expected
 
-    # Testing with agent that is NOT in Robots.txt
+    # Testing with agent NOT in Robots.txt
     def test_sort_robot_txt_wrong(self):
         robots_txt = test_get_robots_txt()
         actual = sort_allowed('tester', robots_txt)
-        expected = (set(), set())
+        expected = ({'/api/rest_v1/?doc', '/w/api.php?action=mobileview&', '/w/load.php?'},
+                    {'/w/', '/api/', '/trap/'})
 
         assert actual == expected
