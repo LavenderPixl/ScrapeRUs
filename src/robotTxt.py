@@ -5,6 +5,7 @@ import requests
 
 agent = 'LavSpidey'
 
+
 def setup_robot_txt(base_urls):
     urls = {}
     for url in base_urls:
@@ -33,6 +34,10 @@ def get_robot_txt(base_url):
 
 
 def check_request(base_url):
+    """
+    :param base_url: Example: https://example.com
+    :return: Http response.
+    """
     retries = 3
     retry_codes = [
         HTTPStatus.TOO_MANY_REQUESTS,
@@ -44,7 +49,7 @@ def check_request(base_url):
 
     for r in range(retries):
         try:
-            result = requests.get(base_url + "/robots.txt", headers= {
+            result = requests.get(base_url + "/robots.txt", headers={
                 'User-Agent': "LavSpidey"
             })
             return result
@@ -59,7 +64,12 @@ def check_request(base_url):
                 continue
             exit("Could not connect to website. Have you been limited?")
 
+
 def read_robot_txt(robot_txt):
+    """
+    :param robot_txt: Robot.txt file to read.
+    :return: A set with agents and their allowed and disallowed web pages.
+    """
     current_agent = ''
     agents = {}
     for line in robot_txt.splitlines():
