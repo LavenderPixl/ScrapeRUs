@@ -11,7 +11,6 @@ def setup_robot_txt(base_urls):
     for url in base_urls:
         if not url.startswith('https://') or url.startswith('http://'):
             url = 'https://' + url
-        print(f"Base url: {url}")
         txt = get_robot_txt(url)
         if not txt:
             print("Could not find a robots txt. Assuming full access to scrape.")
@@ -26,7 +25,6 @@ def setup_robot_txt(base_urls):
 
 def get_robot_txt(base_url):
     result = check_request(base_url)
-    print(f"Response/Status Code: {result.status_code}")
     if not result:
         print("No robots txt.")
         return None
