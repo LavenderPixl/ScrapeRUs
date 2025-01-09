@@ -11,14 +11,17 @@ def setup_robot_txt(base_urls):
     for url in base_urls:
         if not url.startswith('https://') or url.startswith('http://'):
             url = 'https://' + url
+
         txt = get_robot_txt(url)
         if not txt:
             print("Could not find a robots txt. Assuming full access to scrape.")
             return set(), set()
+
         parsed_text = read_robot_txt(txt)
         if parsed_text == "err":
             print("Could not find a robots txt. Assuming full access to scrape.")
             return set(), set()
+
         urls = sort_allowed(agent, parsed_text)
     return urls
 
