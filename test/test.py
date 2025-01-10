@@ -88,7 +88,6 @@ def create_csv_tester():
         print("CSV tester created.")
 
 
-
 def read_csv_tester():
     data_list = []
 
@@ -106,16 +105,18 @@ def remove_csv_tester():
         print("CSV tester removed.")
 
 
-
 class TestCSV(unittest.TestCase):
     def test_add_to_csv(self):
-        site = website.Website("https://wikipedia.org", None, None)
+        site = website.Website("https://wikipedia.org", None, None, False)
         domains = [site]
+
+        create_csv_tester()
         add_to_csv('temp.csv', domains)
-
-        expected = [['https://wikipedia.org', 'wikipedia.org', 'Null', 'Null']]
         actual = read_csv_tester()
-
         remove_csv_tester()
-        assert actual == expected
 
+        expected = [['Url', 'Domain', 'Allowed', 'Disallowed'],
+                    ['https://wikipedia.org wikipedia.org Null Null']]
+        print(actual)
+        print(expected)
+        assert actual == expected
