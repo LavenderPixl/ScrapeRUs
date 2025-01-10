@@ -29,7 +29,7 @@ def add_to_csv(file, domains):
             domain.disallowed = "Null"
             domain.allowed = "Null"
 
-        i = [domain.url, domain.domain, domain.allowed, domain.disallowed]
+        i = [domain.url, domain.domain, domain.allowed, domain.disallowed, domain.visited]
         with open(file, 'a') as csv_file:
             writer = csv.writer(csv_file, delimiter=' ')
             writer.writerow(i)
@@ -59,6 +59,7 @@ def check_if_exists(file, domain):
         csv_start_up()
 
 
-def print_csv_data():
-    data_frame = pd.read_csv(file_name)
+def print_csv_data(file):
+    data_frame = pd.read_csv(file)
     print(data_frame)
+    return data_frame
