@@ -6,9 +6,9 @@ import requests
 agent = 'LavSpidey'
 
 
-def setup_robot_txt(base_urls):
+def setup_robot_txt(domains):
     urls = {}
-    for url in base_urls:
+    for url in domains:
         if not url.startswith('https://') or url.startswith('http://'):
             url = 'https://' + url
 
