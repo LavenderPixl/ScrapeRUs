@@ -36,19 +36,10 @@ def add_to_csv(file, domains):
     print(f"Rows added: {rows_added}")
 
 def check_if_exists(file, domain):
-    df = pd.read_csv(file)
-    for index, row in df.iterrows():
-        print(row.url)
-
-    # with open(file, 'r') as csv_file:
-    #     csv_data = csv.reader(csv_file)
-    #     for row in csv_data:
-    #         if domain.url in row:
-    #             return True
-    #         else:
-    #             print(row)
-    #             return False
-
+    data_frame = pd.read_csv(file)
+    if domain.url in data_frame['Url'].unique():
+        return True
+    return False
 
 def print_csv_data():
     with open(file_name, 'r') as csv_file:

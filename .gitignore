@@ -2,3 +2,4 @@
 .idea/
 /src/__pycache__/
 *.cpython-312.pyc
+/VisitedSites.csv
