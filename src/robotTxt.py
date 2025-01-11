@@ -8,11 +8,11 @@ agent = 'LavSpidey'
 
 def setup_robot_txt(domains):
     urls = {}
-    for url in domains:
-        if not url.startswith('https://') or url.startswith('http://'):
-            url = 'https://' + url
+    for domain in domains:
+        if not domain.url.startswith('https://') or domain.url.startswith('http://'):
+            domain.url = 'https://' + domain.url
 
-        txt = get_robot_txt(url)
+        txt = get_robot_txt(domain.url)
         if not txt:
             print("Could not find a robots txt. Assuming full access to scrape.")
             return set(), set()

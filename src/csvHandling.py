@@ -6,7 +6,7 @@ from pandas.errors import EmptyDataError
 
 file_name = "VisitedSites.csv"
 
-fields = ['Url', 'Domain', 'Allowed', 'Disallowed']
+fields = ['Url', 'Domain', 'Allowed', 'Disallowed', 'Scraped']
 rows = []
 
 
@@ -38,9 +38,6 @@ def add_to_csv(file, domains):
     print(f"Rows added: {rows_added}")
 
 
-# def edit_row():
-
-
 def check_if_exists(file, domain):
     try:
         data_frame = pd.read_csv(file)
@@ -57,6 +54,16 @@ def check_if_exists(file, domain):
     except KeyError:
         os.remove(file)
         csv_start_up()
+
+
+def check_if_scraped(file):
+    scraped = []
+    data_frame = pd.read_csv(file)
+    for i in data_frame.index:
+        if data_frame.loc[i, 'Scraped'] == 'False':
+            scraped.append(i)
+    return scraped
+
 
 
 def print_csv_data(file):

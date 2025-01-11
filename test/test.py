@@ -81,7 +81,7 @@ class TestScraping(unittest.TestCase):
 
 
 def create_csv_tester():
-    f = ['Url', 'Domain', 'Allowed', 'Disallowed']
+    f = ['Url', 'Domain', 'Allowed', 'Disallowed', 'Scraped']
     with open('temp.csv', 'w') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(f)
@@ -115,8 +115,7 @@ class TestCSV(unittest.TestCase):
         actual = read_csv_tester()
         remove_csv_tester()
 
-        expected = [['Url', 'Domain', 'Allowed', 'Disallowed'],
-                    ['https://wikipedia.org wikipedia.org Null Null']]
-        print(actual)
-        print(expected)
+        expected = [['Url', 'Domain', 'Allowed', 'Disallowed', 'Scraped'],
+                    ['https://wikipedia.org wikipedia.org Null Null False']]
+
         assert actual == expected

@@ -7,4 +7,3 @@ class Website:
         self.allowed = allowed
         self.disallowed = disallowed
         self.visited = scraped
-        # self.robots_txt = robots_txt
