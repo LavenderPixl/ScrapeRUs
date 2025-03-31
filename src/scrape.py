@@ -15,11 +15,14 @@ def scrape(urls, allowed, disallowed):
     for url in urls:
         check_url(url)
 
+
     # for url in urls:
     #     html = get_html(url)
     #     gathered_links.add(scrape_for_urls(html))
     #
     #     check_url(url, allowed, disallowed)
+
+
 
 def get_html(url):
     """

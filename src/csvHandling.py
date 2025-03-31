@@ -57,6 +57,10 @@ def check_if_exists(file, domain):
 
 
 def check_if_scraped(file):
+    """
+    :param file:
+    :return: Returns nothing OR every website object that has not been scraped.
+    """
     scraped = []
     data_frame = pd.read_csv(file)
     for i in data_frame.index:
@@ -64,6 +68,14 @@ def check_if_scraped(file):
             scraped.append(i)
     return scraped
 
+
+def check_for_robots_txt(file, url):
+    data_frame = pd.read_csv(file)
+    frame = data_frame.loc[data_frame['Url'] == url]
+    if frame.loc['Allowed'] == 'Null' and frame.loc['Disallowed'] == 'Null':
+        return False
+    else:
+        return True
 
 
 def print_csv_data(file):

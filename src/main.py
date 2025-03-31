@@ -4,22 +4,31 @@ import robotTxt
 import scrape
 import website
 import csvHandling
+from src.csvHandling import check_if_exists
 
 if __name__ == '__main__':
     # Check if CSV file exists | True: Save local vers. | False: Create it.
+    # TODO: Check csv_list instead of file, for better optimization.
     csv_file = csvHandling.csv_start_up()
 
     # Check CSV for visited pages and if there are any with field 'scraped' as False.
-    not_scraped = csvHandling.check_if_scraped(csv_file)
+    is_scraped = csvHandling.check_if_scraped(csv_file)
 
-    if not_scraped is None or not not_scraped:
-        # Starting to scrape from Wikipedia.
+    if is_scraped is None or not is_scraped:
+        # No links that need scraping.
         site = website.Website("https://wikipedia.org", None, None, False)
-        domains = [site]
+        is_new = check_if_exists(csv_file, site)
+        if is_new:
+            domains = [site]
+
+        # TODO: Check if we've visited the site before - Is allowed/disallowed filled?
+        # Starting to scrape from Wikipedia.
+
         print('All scraped.')
     else:
-        domains = not_scraped
-        print('Not scraped:', not_scraped)
+        # Links that need scraping...
+        domains = is_scraped
+        print('Not scraped:', is_scraped)
 
     # Gets robot.txt file from base site.
     for site in domains:
